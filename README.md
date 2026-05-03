@@ -6,12 +6,12 @@ It provides structured agent workflows, command-line scripts, and schema definit
 ## Features
 
 - ADW payroll calculation from dynamic Excel workbooks (`ADW.md`, `scripts/calculate_adw_salary.py`)
-- Employee master data management in SQLite (`EMPLOYEE.md`, `scripts/employee_db.py`)
-- Structured onboarding/offboarding task tracking (`LIFECYCLE.md`, `scripts/lifecycle_db.py`)
-- Employment compliance date tracking (contract/work eligibility) (`COMPLIANCE.md`, `scripts/compliance_db.py`)
-- IR56B profile extension, readiness checking, and Excel export (`IR56B.md`, `scripts/ir56b_db.py`, `scripts/ir56b_export.py`)
-- Leave module with leave type catalog, leave application, and compensation leave application (`LEAVE.md`, `scripts/leave_db.py`)
-- Shared SQLite helper with one-command schema initialization (`scripts/hkhr_sqlite.py`)
+- Employee master data management in SQLite (`EMPLOYEE.md`, `scripts/*_employee.py`)
+- Structured onboarding/offboarding task tracking (`LIFECYCLE.md`, `scripts/*_lifecycle*.py`)
+- Employment compliance date tracking (contract/work eligibility) (`COMPLIANCE.md`, `scripts/*_compliance.py`)
+- IR56B profile extension, readiness checking, and Excel export (`IR56B.md`, `scripts/*_ir56b*.py`)
+- Leave module with leave type catalog, leave application, and compensation leave application (`LEAVE.md`, `scripts/*_leave*.py`)
+- Per-feature scripts with direct SQLite access and one-command schema initialization (`scripts/init_employee.py`)
 
 ## Project Structure
 
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 ### 3) Initialize database schema
 
 ```bash
-python scripts/employee_db.py init
+python scripts/init_employee.py
 ```
 
 This applies all module schemas into the same SQLite database.
@@ -62,39 +62,39 @@ Note: this project does not auto-migrate legacy `data/employees.db`. To keep usi
 ### Employee CRUD
 
 ```bash
-python scripts/employee_db.py create --employee-no E001 --full-name "Chan Tai Man" --email chan@example.com
-python scripts/employee_db.py get-by-no E001
-python scripts/employee_db.py search Chan
-python scripts/employee_db.py update --employee-no E001 --department HR
-python scripts/employee_db.py delete E001
+python scripts/create_employee.py --employee-no E001 --full-name "Chan Tai Man" --email chan@example.com
+python scripts/get_employee_by_no.py E001
+python scripts/search_employee.py Chan
+python scripts/update_employee.py --employee-no E001 --department HR
+python scripts/delete_employee.py E001
 ```
 
 ### Onboarding / Offboarding checklist
 
 ```bash
-python scripts/lifecycle_db.py seed-default-templates
-python scripts/lifecycle_db.py task-sync E001 onboarding
-python scripts/lifecycle_db.py task-list --employee-no E001 --phase onboarding
-python scripts/lifecycle_db.py task-set-status E001 onboarding contract_sign done
+python scripts/seed_lifecycle_templates.py
+python scripts/sync_lifecycle_tasks.py E001 onboarding
+python scripts/list_lifecycle_tasks.py --employee-no E001 --phase onboarding
+python scripts/set_lifecycle_task_status.py E001 onboarding contract_sign done
 ```
 
 ### Employment compliance
 
 ```bash
-python scripts/compliance_db.py create \
+python scripts/create_compliance.py \
   --employee-no E001 \
   --record-type contract \
   --title "Employment Contract 2026" \
   --start-date 2026-01-01 \
   --end-date 2026-12-31
-python scripts/compliance_db.py list --employee-no E001
+python scripts/list_compliance.py --employee-no E001
 ```
 
 ### Leave module
 
 ```bash
-python scripts/leave_db.py seed-default-types
-python scripts/leave_db.py application-upsert \
+python scripts/seed_leave_types.py
+python scripts/upsert_leave_application.py \
   --application-no LA-1 \
   --employee-no E001 \
   --leave-type-no AL \
@@ -103,16 +103,29 @@ python scripts/leave_db.py application-upsert \
   --from-section AM \
   --to-section PM \
   --status Pending
-python scripts/leave_db.py application-list --employee-no E001
+python scripts/list_leave_applications.py --employee-no E001
 ```
 
 ### IR56B readiness and export
 
 ```bash
-python scripts/ir56b_db.py upsert --employee-no E001 --hkid A1234567 --address-1 "Flat A" --address-area-code HK
-python scripts/ir56b_db.py readiness E001
-python scripts/ir56b_export.py export-xlsx --output output/ir56b_fill_template.xlsx
+python scripts/upsert_ir56b_profile.py --employee-no E001 --hkid A1234567 --address-1 "Flat A" --address-area-code HK
+python scripts/check_ir56b_readiness.py E001
+python scripts/export_ir56b_xlsx.py --output output/ir56b_fill_template.xlsx
 ```
+
+## Script migration map
+
+If you previously used monolithic scripts, migrate to feature scripts:
+
+- `employee_db.py create|get-by-no|get-by-email|search|update|delete|list` -> `create_employee.py|get_employee_by_no.py|get_employee_by_email.py|search_employee.py|update_employee.py|delete_employee.py|list_employee.py`
+- `leave_db.py leave-type-*` -> `upsert_leave_type.py|get_leave_type.py|list_leave_types.py|delete_leave_type.py`
+- `leave_db.py application-*` -> `upsert_leave_application.py|get_leave_application.py|list_leave_applications.py|delete_leave_application.py`
+- `leave_db.py com-leave-*` -> `upsert_compensation_leave.py|get_compensation_leave.py|list_compensation_leave.py|delete_compensation_leave.py`
+- `lifecycle_db.py template-*|task-*|seed-default-templates` -> `upsert_lifecycle_template.py|delete_lifecycle_template.py|list_lifecycle_templates.py|upsert_lifecycle_task.py|set_lifecycle_task_status.py|sync_lifecycle_tasks.py|list_lifecycle_tasks.py|delete_lifecycle_task.py|seed_lifecycle_templates.py`
+- `compliance_db.py create|get|list|update|delete` -> `create_compliance.py|get_compliance.py|list_compliance.py|update_compliance.py|delete_compliance.py`
+- `ir56b_db.py upsert|get|list|readiness|delete` -> `upsert_ir56b_profile.py|get_ir56b_profile.py|list_ir56b_profiles.py|check_ir56b_readiness.py|delete_ir56b_profile.py`
+- `ir56b_export.py export-xlsx` -> `export_ir56b_xlsx.py`
 
 ## Output contract
 

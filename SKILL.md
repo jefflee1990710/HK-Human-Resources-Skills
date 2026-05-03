@@ -17,11 +17,11 @@ This project is a **central place for HR-related agent guidance**, not a single 
 | Topic | Doc / entry |
 |--------|-------------|
 | ADW payroll from Excel (mapping, payout, warnings) | [ADW.md](ADW.md) — uses `scripts/calculate_adw_salary.py` |
-| Employee master data (SQLite, CRUD + search) | [EMPLOYEE.md](EMPLOYEE.md) — `schema/employee.sql`, `scripts/employee_db.py` |
-| Structured onboarding and offboarding | [LIFECYCLE.md](LIFECYCLE.md) — `schema/lifecycle.sql`, `scripts/lifecycle_db.py` |
-| Employment compliance dates | [COMPLIANCE.md](COMPLIANCE.md) — `schema/compliance.sql`, `scripts/compliance_db.py` |
-| IR56B profile and completeness export | [IR56B.md](IR56B.md) — `schema/employee_ir56b.sql`, `scripts/ir56b_db.py`, `scripts/ir56b_export.py` |
-| Leave types and leave applications | [LEAVE.md](LEAVE.md) — `schema/leave.sql`, `scripts/leave_db.py` |
+| Employee master data (SQLite, CRUD + search) | [EMPLOYEE.md](EMPLOYEE.md) — `schema/employee.sql`, `scripts/*_employee.py` |
+| Structured onboarding and offboarding | [LIFECYCLE.md](LIFECYCLE.md) — `schema/lifecycle.sql`, `scripts/*_lifecycle*.py` |
+| Employment compliance dates | [COMPLIANCE.md](COMPLIANCE.md) — `schema/compliance.sql`, `scripts/*_compliance.py` |
+| IR56B profile and completeness export | [IR56B.md](IR56B.md) — `schema/employee_ir56b.sql`, `scripts/*_ir56b*.py` |
+| Leave types and leave applications | [LEAVE.md](LEAVE.md) — `schema/leave.sql`, `scripts/*_leave*.py` |
 
 Add new areas as separate markdown files and link them in the table above.
 
@@ -36,11 +36,11 @@ Add new areas as separate markdown files and link them in the table above.
 When a task reads or writes HR records in this repo, treat the database as **SQLite** and ensure it exists before any query.
 
 1. If the DB file does not exist (default `data/hrcore.db`, or path from `EMPLOYEE_DB_PATH`), initialize it with:
-   - `python scripts/employee_db.py init`
-2. Use the SQLite-backed scripts in `scripts/` (for example `scripts/employee_db.py`).
+   - `python scripts/init_employee.py`
+2. Use the feature scripts in `scripts/` (for example `scripts/create_employee.py`, `scripts/list_leave_applications.py`).
 3. Before first DB access on a machine/path, initialize schemas:
-   - `python scripts/employee_db.py init`
-4. If using Python directly, use `scripts.hkhr_sqlite.connect()` and apply schemas first via `scripts.hkhr_sqlite.apply_all_schemas()` when needed.
+   - `python scripts/init_employee.py`
+4. Prefer feature scripts in `scripts/` for DB operations so each action is self-contained.
 5. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
 6. Default DB path is `data/hrcore.db` unless `EMPLOYEE_DB_PATH` overrides it.
 7. No automatic migration is performed from legacy `data/employees.db`; use `EMPLOYEE_DB_PATH` if you must continue reading that file.

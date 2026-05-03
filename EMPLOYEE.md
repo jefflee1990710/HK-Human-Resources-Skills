@@ -11,7 +11,7 @@ Use this module to maintain a **fixed-schema** employee directory backed by **SQ
 Create the file and tables once:
 
 ```bash
-python scripts/employee_db.py init
+python scripts/init_employee.py
 ```
 
 `init` now applies **all SQLite module schemas** in this repo (`employee`, `employee_ir56b`, `lifecycle`, `compliance`, `leave`) into the same database file.
@@ -46,31 +46,31 @@ Logical field map (columns match these names in JSON/CLI flags):
 
 **Constraints:** `employee_no` and `email` must remain unique where not null.
 
-## Script: `scripts/employee_db.py`
+## Feature scripts (`scripts/`)
 
-Single entrypoint; every command prints **one JSON object** to stdout (`ok`, payload or `error`).
+Each feature uses one script and returns **one JSON object** to stdout (`ok`, payload or `error`).
 
 ### Setup
 
-- `init` — apply schema (idempotent `CREATE IF NOT EXISTS`).
+- `init_employee.py` — apply schema (idempotent `CREATE IF NOT EXISTS`).
 
 ### Operations (aliases for agent workflows)
 
-| Intent | Command |
-|--------|---------|
-| **createEmployee** | `create` |
-| **getEmployeeByEmployeeNo** | `get-by-no <employee_no>` |
-| **getEmployeeByEmail** | `get-by-email <email>` |
-| **searchEmployee** | `search <query>` — substring match across no, names, email, mobiles, department, title |
-| **updateEmployee** | `update` — patch fields for one `employee_no` |
-| **deleteEmployee** | `delete <employee_no>` — hard delete |
-| **list** (helper) | `list` — ordered by `employee_no`, cap with `--limit` |
+| Intent | Script |
+|--------|--------|
+| **createEmployee** | `create_employee.py` |
+| **getEmployeeByEmployeeNo** | `get_employee_by_no.py <employee_no>` |
+| **getEmployeeByEmail** | `get_employee_by_email.py <email>` |
+| **searchEmployee** | `search_employee.py <query>` — substring match across no, names, email, mobiles, department, title |
+| **updateEmployee** | `update_employee.py` — patch fields for one `employee_no` |
+| **deleteEmployee** | `delete_employee.py <employee_no>` — hard delete |
+| **list** (helper) | `list_employee.py` — ordered by `employee_no`, cap with `--limit` |
 
 ### Examples
 
 ```bash
 # Create (flags)
-python scripts/employee_db.py create \
+python scripts/create_employee.py \
   --employee-no E001 \
   --full-name "Chan Tai Man" \
   --email chan@example.com \
@@ -81,25 +81,25 @@ python scripts/employee_db.py create \
   --hire-date 2024-01-15
 
 # Create (JSON)
-python scripts/employee_db.py create --json '{"employee_no":"E002","full_name":"Lee Siu Ming","email":"lee@example.com"}'
+python scripts/create_employee.py --json '{"employee_no":"E002","full_name":"Lee Siu Ming","email":"lee@example.com"}'
 
 # getEmployeeByEmployeeNo
-python scripts/employee_db.py get-by-no E001
+python scripts/get_employee_by_no.py E001
 
 # getEmployeeByEmail (case-insensitive)
-python scripts/employee_db.py get-by-email Chan@Example.COM
+python scripts/get_employee_by_email.py Chan@Example.COM
 
 # searchEmployee
-python scripts/employee_db.py search "Chan" --limit 50
+python scripts/search_employee.py "Chan" --limit 50
 
 # updateEmployee
-python scripts/employee_db.py update --employee-no E001 --department HR --employment-status on_leave
+python scripts/update_employee.py --employee-no E001 --department HR --employment-status on_leave
 
 # deleteEmployee
-python scripts/employee_db.py delete E002
+python scripts/delete_employee.py E002
 
 # List
-python scripts/employee_db.py list --limit 100
+python scripts/list_employee.py --limit 100
 ```
 
 ### Response shape

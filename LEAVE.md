@@ -21,41 +21,39 @@ Enums:
 - com-leave status: `Pending`, `Approved`, `Rejected`
 - leave unit: `Day`, `Hour`
 
-## Script
+## Feature scripts (`scripts/`)
 
-`scripts/leave_db.py`
-
-All commands return JSON (`ok`, payload, `error`).
+Use one script per feature. All commands return JSON (`ok`, payload, `error`).
 
 ### Leave type commands
 
-- `seed-default-types`
-- `leave-type-upsert`
-- `leave-type-get <leave_type_no>`
-- `leave-type-list`
-- `leave-type-delete <leave_type_no>`
+- `seed_leave_types.py`
+- `upsert_leave_type.py`
+- `get_leave_type.py <leave_type_no>`
+- `list_leave_types.py`
+- `delete_leave_type.py <leave_type_no>`
 
 ### Leave application commands
 
-- `application-upsert`
-- `application-get <application_no>`
-- `application-list [--employee-no E001] [--status Pending]`
-- `application-delete <application_no>`
+- `upsert_leave_application.py`
+- `get_leave_application.py <application_no>`
+- `list_leave_applications.py [--employee-no E001] [--status Pending]`
+- `delete_leave_application.py <application_no>`
 
 ### Compensation leave commands
 
-- `com-leave-upsert`
-- `com-leave-get <application_no>`
-- `com-leave-list [--employee-no E001] [--status Pending]`
-- `com-leave-delete <application_no>`
+- `upsert_compensation_leave.py`
+- `get_compensation_leave.py <application_no>`
+- `list_compensation_leave.py [--employee-no E001] [--status Pending]`
+- `delete_compensation_leave.py <application_no>`
 
 ### Example
 
 ```bash
-python scripts/leave_db.py init
-python scripts/leave_db.py seed-default-types
+python scripts/init_leave.py
+python scripts/seed_leave_types.py
 
-python scripts/leave_db.py application-upsert \
+python scripts/upsert_leave_application.py \
   --application-no LA-2026-001 \
   --employee-no E001 \
   --leave-type-no AL \
@@ -65,5 +63,5 @@ python scripts/leave_db.py application-upsert \
   --to-section PM \
   --status Pending
 
-python scripts/leave_db.py application-list --employee-no E001
+python scripts/list_leave_applications.py --employee-no E001
 ```

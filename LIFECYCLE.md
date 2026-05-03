@@ -16,30 +16,29 @@ Statuses:
 - `skipped`
 - `na`
 
-## Script
+## Feature scripts (`scripts/`)
 
-`scripts/lifecycle_db.py`
-
-All commands return JSON (`ok`, payload, `error`).
+Use one script per feature. All commands return JSON (`ok`, payload, `error`).
 
 ### Core commands
 
-- `seed-default-templates`
-- `template-list [--phase onboarding|offboarding]`
-- `template-upsert --phase ... --task-code ... --title ...`
-- `template-delete <phase> <task_code>`
-- `task-sync <employee_no> <phase>` (copy missing template tasks to employee)
-- `task-upsert ...` (create/update one task instance)
-- `task-set-status <employee_no> <phase> <task_code> <status>`
-- `task-list [--employee-no E001 --phase onboarding --status pending]`
-- `task-delete <employee_no> <phase> <task_code>`
+- `init_lifecycle.py`
+- `seed_lifecycle_templates.py`
+- `list_lifecycle_templates.py [--phase onboarding|offboarding]`
+- `upsert_lifecycle_template.py --phase ... --task-code ... --title ...`
+- `delete_lifecycle_template.py <phase> <task_code>`
+- `sync_lifecycle_tasks.py <employee_no> <phase>` (copy missing template tasks to employee)
+- `upsert_lifecycle_task.py ...` (create/update one task instance)
+- `set_lifecycle_task_status.py <employee_no> <phase> <task_code> <status>`
+- `list_lifecycle_tasks.py [--employee-no E001 --phase onboarding --status pending]`
+- `delete_lifecycle_task.py <employee_no> <phase> <task_code>`
 
 ### Example
 
 ```bash
-python scripts/lifecycle_db.py init
-python scripts/lifecycle_db.py seed-default-templates
-python scripts/lifecycle_db.py task-sync E001 onboarding
-python scripts/lifecycle_db.py task-set-status E001 onboarding contract_sign done --notes "Signed on first day"
-python scripts/lifecycle_db.py task-list --employee-no E001 --phase onboarding
+python scripts/init_lifecycle.py
+python scripts/seed_lifecycle_templates.py
+python scripts/sync_lifecycle_tasks.py E001 onboarding
+python scripts/set_lifecycle_task_status.py E001 onboarding contract_sign done --notes "Signed on first day"
+python scripts/list_lifecycle_tasks.py --employee-no E001 --phase onboarding
 ```
