@@ -30,3 +30,14 @@ Add new areas as separate markdown files and link them in the table above.
 1. Match the user’s request to a module (e.g. HK ADW monthly payroll → [ADW.md](ADW.md); employee directory → [EMPLOYEE.md](EMPLOYEE.md); leave handling → [LEAVE.md](LEAVE.md)).
 2. Follow that module’s workflow end-to-end; do not assume every HR question maps to ADW.
 3. Prefer this repo’s stated defaults and output contracts in each module; call out when something is operational guidance rather than legal advice.
+
+## SQLite database safety rule (required)
+
+When a task reads or writes HR records in this repo, treat the database as **SQLite** and ensure it exists before any query.
+
+1. Use the SQLite-backed scripts in `scripts/` (for example `scripts/employee_db.py`).
+2. Before first DB access on a machine/path, initialize schemas:
+   - `python scripts/employee_db.py init`
+3. If using Python directly, use `scripts.hkhr_sqlite.connect()` and apply schemas first via `scripts.hkhr_sqlite.apply_all_schemas()` when needed.
+4. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
+5. Default DB path is `data/employees.db` unless `EMPLOYEE_DB_PATH` overrides it.
