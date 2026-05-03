@@ -1,0 +1,24 @@
+{
+  "salary": {
+    "employee_id": "Employee No",
+    "employee_name": "Employee Name",
+    "month": "Month",
+    "base_salary": "Base Salary",
+    "allowance": "Allowance",
+    "commission": "Commission",
+    "bonus": "Bonus",
+    "deduction": "Deduction"
+  },
+  "leave": {
+    "employee_id": "Employee No",
+    "employee_name": "Employee Name",
+    "month": "Month",
+    "annual_leave_days": "AL Days",
+    "sick_leave_45_days": "SL 4/5 Days",
+    "sick_leave_full_days": "SL Full Days",
+    "maternity_leave_days": "Maternity Days",
+    "paternity_leave_days": "Paternity Days",
+    "unpaid_leave_days": "Unpaid Leave Days",
+    "no_pay_days": "No Pay Days"
+  }
+}
