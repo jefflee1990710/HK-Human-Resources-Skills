@@ -44,3 +44,18 @@ When a task reads or writes HR records in this repo, treat the database as **SQL
 5. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
 6. Default DB path is `data/hrcore.db` unless `EMPLOYEE_DB_PATH` overrides it.
 7. No automatic migration is performed from legacy `data/employees.db`; use `EMPLOYEE_DB_PATH` if you must continue reading that file.
+
+## Error visibility rule (required)
+
+When any script command fails, show concrete diagnostics to the user (not only `[error]`).
+
+1. Before running repo scripts, verify location:
+   - `pwd`
+   - `ls scripts`
+2. Run commands from repo root and preserve stderr in output.
+3. On failure, report:
+   - exact command
+   - current working directory
+   - full stderr/traceback text
+   - exit code
+4. If first command fails, do not silently continue to unrelated file search; first explain the failure details and suggest the next fix (for example wrong `cwd`, missing script, missing table, permission issue).
