@@ -4,12 +4,72 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
 import sqlite3
 from typing import Any
 
-from hkhr_sqlite import apply_all_schemas, connect, now_utc_iso, out, parse_json_arg, row_to_dict
-
 ALLOWED_RECORD_TYPES = {"contract", "work_eligibility", "other"}
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_DB_PATH = REPO_ROOT / "data" / "hrcore.db"
+SCHEMA_FILES = [
+    REPO_ROOT / "schema" / "employee.sql",
+    REPO_ROOT / "schema" / "employee_ir56b.sql",
+    REPO_ROOT / "schema" / "lifecycle.sql",
+    REPO_ROOT / "schema" / "compliance.sql",
+    REPO_ROOT / "schema" / "leave.sql",
+]
+
+
+def get_db_path() -> Path:
+    override = os.environ.get("EMPLOYEE_DB_PATH")
+    if override:
+        return Path(override).expanduser().resolve()
+    return DEFAULT_DB_PATH
+
+
+def connect() -> sqlite3.Connection:
+    db_path = get_db_path()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+def apply_all_schemas() -> None:
+    conn = connect()
+    try:
+        for schema_file in SCHEMA_FILES:
+            sql = schema_file.read_text(encoding="utf-8")
+            conn.executescript(sql)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def now_utc_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def row_to_dict(row: sqlite3.Row | None) -> dict[str, Any] | None:
+    if row is None:
+        return None
+    return {k: row[k] for k in row.keys()}
+
+
+def parse_json_arg(json_text: str | None, json_file: str | None) -> dict[str, Any]:
+    if json_text:
+        return json.loads(json_text)
+    if json_file:
+        return json.loads(Path(json_file).read_text(encoding="utf-8"))
+    return {}
+
+
+def out(obj: Any) -> None:
+    print(json.dumps(obj, ensure_ascii=False, indent=2))
 
 
 def _normalize_record_type(raw: Any) -> str | None:

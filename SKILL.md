@@ -35,11 +35,12 @@ Add new areas as separate markdown files and link them in the table above.
 
 When a task reads or writes HR records in this repo, treat the database as **SQLite** and ensure it exists before any query.
 
-1. If the DB file does not exist (default `data/employees.db`, or path from `EMPLOYEE_DB_PATH`), initialize it with:
+1. If the DB file does not exist (default `data/hrcore.db`, or path from `EMPLOYEE_DB_PATH`), initialize it with:
    - `python scripts/employee_db.py init`
 2. Use the SQLite-backed scripts in `scripts/` (for example `scripts/employee_db.py`).
 3. Before first DB access on a machine/path, initialize schemas:
    - `python scripts/employee_db.py init`
 4. If using Python directly, use `scripts.hkhr_sqlite.connect()` and apply schemas first via `scripts.hkhr_sqlite.apply_all_schemas()` when needed.
 5. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
-6. Default DB path is `data/employees.db` unless `EMPLOYEE_DB_PATH` overrides it.
+6. Default DB path is `data/hrcore.db` unless `EMPLOYEE_DB_PATH` overrides it.
+7. No automatic migration is performed from legacy `data/employees.db`; use `EMPLOYEE_DB_PATH` if you must continue reading that file.

@@ -4,29 +4,72 @@
 Commands mirror common operations: init, create, get-by-no, get-by-email,
 search, update, delete, list.
 
-Default DB path: <repo>/data/employees.db
-Override: EMPLOYEE_DB_PATH=/path/to/employees.db
+Default DB path: <repo>/data/hrcore.db
+Override: EMPLOYEE_DB_PATH=/path/to/hrcore.db
 """
 
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
 from typing import Any
 
-from hkhr_sqlite import (
-    apply_all_schemas,
-    connect,
-    get_db_path,
-    now_utc_iso,
-    out,
-    row_to_dict,
-)
-
 ALLOWED_STATUS = {"active", "on_leave", "terminated", "probation"}
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_DB_PATH = REPO_ROOT / "data" / "hrcore.db"
+SCHEMA_FILES = [
+    REPO_ROOT / "schema" / "employee.sql",
+    REPO_ROOT / "schema" / "employee_ir56b.sql",
+    REPO_ROOT / "schema" / "lifecycle.sql",
+    REPO_ROOT / "schema" / "compliance.sql",
+    REPO_ROOT / "schema" / "leave.sql",
+]
+
+
+def get_db_path() -> Path:
+    override = os.environ.get("EMPLOYEE_DB_PATH")
+    if override:
+        return Path(override).expanduser().resolve()
+    return DEFAULT_DB_PATH
+
+
+def connect() -> sqlite3.Connection:
+    db_path = get_db_path()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+def apply_all_schemas() -> None:
+    conn = connect()
+    try:
+        for schema_file in SCHEMA_FILES:
+            sql = schema_file.read_text(encoding="utf-8")
+            conn.executescript(sql)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def now_utc_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def row_to_dict(row: sqlite3.Row | None) -> dict[str, Any] | None:
+    if row is None:
+        return None
+    return {k: row[k] for k in row.keys()}
+
+
+def out(obj: Any) -> None:
+    print(json.dumps(obj, ensure_ascii=False, indent=2))
 
 
 def cmd_init(_: argparse.Namespace) -> int:

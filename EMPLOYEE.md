@@ -6,7 +6,7 @@ Use this module to maintain a **fixed-schema** employee directory backed by **SQ
 
 | Default path | Override |
 |--------------|----------|
-| `data/employees.db` (under repo root) | Set `EMPLOYEE_DB_PATH` to an absolute or user-expanded path |
+| `data/hrcore.db` (under repo root) | Set `EMPLOYEE_DB_PATH` to an absolute or user-expanded path |
 
 Create the file and tables once:
 
@@ -15,6 +15,8 @@ python scripts/employee_db.py init
 ```
 
 `init` now applies **all SQLite module schemas** in this repo (`employee`, `employee_ir56b`, `lifecycle`, `compliance`, `leave`) into the same database file.
+
+No automatic migration is performed from legacy `data/employees.db`. If you need old data, set `EMPLOYEE_DB_PATH` to that file.
 
 ## Schema (fixed)
 

@@ -18,7 +18,7 @@ It provides structured agent workflows, command-line scripts, and schema definit
 - `SKILL.md`: skill hub entry with module index
 - `schema/*.sql`: SQLite schemas (employee, IR56B, lifecycle, compliance, leave)
 - `scripts/*.py`: CLI entrypoints for each module
-- `data/employees.db`: default SQLite database file (created on first init)
+- `data/hrcore.db`: default SQLite database file (created on first init)
 
 ## Installation
 
@@ -48,12 +48,14 @@ This applies all module schemas into the same SQLite database.
 
 ## Database path
 
-- Default: `data/employees.db`
+- Default: `data/hrcore.db`
 - Override with environment variable:
 
 ```bash
-export EMPLOYEE_DB_PATH="/absolute/path/to/employees.db"
+export EMPLOYEE_DB_PATH="/absolute/path/to/hrcore.db"
 ```
+
+Note: this project does not auto-migrate legacy `data/employees.db`. To keep using legacy data, point `EMPLOYEE_DB_PATH` to that file explicitly.
 
 ## Common workflows
 
