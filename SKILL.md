@@ -34,16 +34,19 @@ Add new areas as separate markdown files and link them in the table above.
 
 When a task reads or writes HR records in this repo, treat the database as **SQLite** and ensure it exists before any query.
 
-1. If the DB file does not exist (default `~/.hkhrcore/hrcore.db`, or path from `EMPLOYEE_DB_PATH`), initialize it with:
+1. Use a home-directory DB path (never repo-local `data/`):
+   - macOS/Linux: `~/.hkhrcore/hrcore.db`
+   - Windows: `%USERPROFILE%\\.hkhrcore\\hrcore.db`
+2. If the DB file does not exist, initialize it with:
    - `python scripts/init_employee.py`
-2. Use the feature scripts in `scripts/` (for example `scripts/create_employee.py`, `scripts/list_leave_applications.py`).
-3. Before first DB access on a machine/path, initialize schemas:
+3. Use the feature scripts in `scripts/` (for example `scripts/create_employee.py`, `scripts/list_leave_applications.py`).
+4. Before first DB access on a machine/path, initialize schemas:
    - `python scripts/init_employee.py`
-4. Prefer feature scripts in `scripts/` for DB operations so each action is self-contained.
-5. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
-6. Default DB path is `~/.hkhrcore/hrcore.db` unless `EMPLOYEE_DB_PATH` overrides it.
-7. No automatic migration is performed from legacy `data/employees.db`; use `EMPLOYEE_DB_PATH` if you must continue reading that file.
-8. Do not require a `data/` folder in the current working directory; the default DB lives under the user home directory and is auto-created.
+5. Prefer feature scripts in `scripts/` for DB operations so each action is self-contained.
+6. Do not assume tables already exist; if a query fails with `no such table`, initialize schemas and retry.
+7. Default DB path is home-based (`~/.hkhrcore/hrcore.db` on macOS/Linux; `%USERPROFILE%\\.hkhrcore\\hrcore.db` on Windows), unless `EMPLOYEE_DB_PATH` overrides it.
+8. No automatic migration is performed from legacy `data/employees.db`; use `EMPLOYEE_DB_PATH` if you must continue reading that file.
+9. Do not require a `data/` folder in the current working directory; the default DB lives under the user home directory and is auto-created.
 
 ## Error visibility rule (required)
 
