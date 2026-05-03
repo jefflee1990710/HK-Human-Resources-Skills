@@ -44,7 +44,7 @@ READINESS_REQUIRED = [
 ]
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_DB_PATH = REPO_ROOT / "data" / "hrcore.db"
+DEFAULT_DB_PATH = Path.home() / ".hkhrcore" / "hrcore.db"
 SCHEMA_FILES = [
     REPO_ROOT / "schema" / "employee.sql",
     REPO_ROOT / "schema" / "employee_ir56b.sql",

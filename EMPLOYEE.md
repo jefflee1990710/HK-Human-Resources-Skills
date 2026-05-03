@@ -6,7 +6,7 @@ Use this module to maintain a **fixed-schema** employee directory backed by **SQ
 
 | Default path | Override |
 |--------------|----------|
-| `data/hrcore.db` (under repo root) | Set `EMPLOYEE_DB_PATH` to an absolute or user-expanded path |
+| `~/.hkhrcore/hrcore.db` (auto-created on first connect) | Set `EMPLOYEE_DB_PATH` to an absolute or user-expanded path |
 
 Create the file and tables once:
 

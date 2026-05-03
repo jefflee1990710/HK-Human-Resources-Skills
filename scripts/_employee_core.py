@@ -4,7 +4,7 @@
 Commands mirror common operations: init, create, get-by-no, get-by-email,
 search, update, delete, list.
 
-Default DB path: <repo>/data/hrcore.db
+Default DB path: ~/.hkhrcore/hrcore.db
 Override: EMPLOYEE_DB_PATH=/path/to/hrcore.db
 """
 
@@ -21,7 +21,7 @@ from typing import Any
 
 ALLOWED_STATUS = {"active", "on_leave", "terminated", "probation"}
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_DB_PATH = REPO_ROOT / "data" / "hrcore.db"
+DEFAULT_DB_PATH = Path.home() / ".hkhrcore" / "hrcore.db"
 SCHEMA_FILES = [
     REPO_ROOT / "schema" / "employee.sql",
     REPO_ROOT / "schema" / "employee_ir56b.sql",
