@@ -1,7 +1,6 @@
 ---
 name: hkhr-skills
-description: >-
-  Hong Kong HR skill hub. Use for payroll, ADW and average daily wage, leave and
+description: Hong Kong HR skill hub. Use for payroll, ADW and average daily wage, leave and
   statutory entitlements, attendance-to-pay workflows, employee records (SQLite),
   onboarding/offboarding lifecycle, employment compliance timelines, IR56B
   readiness/export, HR spreadsheets, and related operational HR questions where
