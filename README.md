@@ -44,7 +44,85 @@ python scripts/init_employee.py
 
 This applies all module schemas into the same SQLite database.
 
-## How to Use
+## How to Use (AI-first)
+
+This repository is designed as a **skill project for AI assistants** (for example Cursor Agent, Claude Code, or other coding/ops agents).
+
+Recommended flow:
+
+1. Ask your AI to classify your request into a module (`ADW`, `EMPLOYEE`, `LIFECYCLE`, `COMPLIANCE`, `LEAVE`, `IR56B`).
+2. Ask the AI to run the related script(s) and return JSON output plus a human-readable summary.
+3. For any write action, ask the AI to show the exact command before execution.
+4. Keep sensitive HR data local whenever possible.
+
+## Common AI Use Cases
+
+- **Payroll support (ADW)**: Calculate average daily wage payout from workbook files and explain warnings.
+- **Employee operations**: Create, update, search, and list employee records in SQLite.
+- **Onboarding/offboarding**: Sync lifecycle templates and track checklist status per employee.
+- **Compliance tracking**: Record and monitor contract/work-eligibility date ranges.
+- **Leave handling**: Manage leave types, apply leave requests, and review leave history.
+- **IR56B preparation**: Validate profile completeness and export IR56B template workbooks.
+- **Data quality checks**: Let AI detect missing fields, date inconsistencies, or invalid statuses.
+- **Operational Q&A**: Ask AI to explain script outputs and suggest next commands.
+
+## Prompt Examples for Users
+
+Copy and adapt these prompts when working with your AI assistant:
+
+### 1) Setup and initialization
+
+```text
+Use the hkhr-skills project. Verify we are in repo root, create/activate a virtualenv if needed, install requirements, then initialize the SQLite schema with scripts/init_employee.py. Show commands and results.
+```
+
+### 2) Create an employee and verify
+
+```text
+In hkhr-skills, create employee E001 with full name "Chan Tai Man" and email "chan@example.com". Then fetch the same employee by employee number and summarize the JSON outputs.
+```
+
+### 3) Search and update employee profile
+
+```text
+Search employees by keyword "Chan", then update E001 department to "HR" and phone to "+85291234567". Show the exact commands before running them.
+```
+
+### 4) Run onboarding tasks
+
+```text
+Seed lifecycle templates, sync onboarding tasks for employee E001, list tasks, and mark contract_sign as done. Return both raw JSON and a short status summary.
+```
+
+### 5) Add a compliance record
+
+```text
+Create a compliance record for E001: type=contract, title="Employment Contract 2026", start=2026-01-01, end=2026-12-31. Then list compliance records for E001.
+```
+
+### 6) Submit and review leave application
+
+```text
+Seed leave types if missing, submit leave application LA-1 for E001 (AL, 2026-05-10 AM to PM, status Pending), then list all leave applications for E001.
+```
+
+### 7) Check IR56B readiness and export
+
+```text
+Upsert IR56B profile for E001 with HKID and address fields, run readiness check, explain any missing fields, and export IR56B Excel to output/ir56b_fill_template.xlsx.
+```
+
+### 8) Safe troubleshooting prompt
+
+```text
+If any hkhr-skills command fails, stop and report: exact command, cwd, stderr/traceback, and exit code. Propose the smallest next fix and wait for confirmation.
+```
+
+### 9) Privacy-aware processing
+
+```text
+Work with hkhr-skills using local files and local model assumptions. Do not send employee-identifiable data to external services. Redact sensitive fields in your response unless I ask otherwise.
+```
 
 ## Database path
 
