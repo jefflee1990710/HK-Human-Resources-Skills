@@ -1,2 +1,5 @@
 pandas
 openpyxl
+pytest
+langchain
+langchain-google-genai
