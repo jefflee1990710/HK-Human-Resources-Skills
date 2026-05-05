@@ -97,14 +97,85 @@ Recommended flow:
 
 ## Common AI Use Cases
 
-- **Payroll support (ADW)**: Calculate average daily wage payout from workbook files and explain warnings.
-- **Employee operations**: Create, update, search, and list employee records in SQLite.
-- **Onboarding/offboarding**: Sync lifecycle templates and track checklist status per employee.
-- **Compliance tracking**: Record and monitor contract/work-eligibility date ranges.
-- **Leave handling**: Manage leave types, apply leave requests, and review leave history.
-- **IR56B preparation**: Validate profile completeness and export IR56B template workbooks.
-- **Data quality checks**: Let AI detect missing fields, date inconsistencies, or invalid statuses.
-- **Operational Q&A**: Ask AI to explain script outputs and suggest next commands.
+- **Payroll support (`ADW`)**
+  - **Feature details**
+    - Reads dynamic Excel workbook structures and infers sheet/column mapping.
+    - Calculates ADW-based payout outputs and produces warning files for review.
+    - Supports report-first mode for mapping validation before payroll calculation.
+  - **Use cases**
+    - "Calculate monthly ADW payout for staff and explain warning rows."
+    - "Generate payout summary CSVs for finance handoff."
+    - "Review mapping confidence and fix columns before final run."
+
+- **Employee operations (`EMPLOYEE`)**
+  - **Feature details**
+    - Creates, updates, searches, lists, and deletes employee records in SQLite.
+    - Supports JSON-style script outputs for automation and downstream parsing.
+    - Uses home-based DB path by default with optional env override.
+  - **Use cases**
+    - "Add a new employee profile and verify by employee number."
+    - "Search by name/keyword and update department/contact info."
+    - "Produce a quick employee list snapshot for internal review."
+
+- **Onboarding/offboarding (`LIFECYCLE`)**
+  - **Feature details**
+    - Seeds default checklist templates for onboarding and offboarding phases.
+    - Syncs template tasks to employee-specific task instances.
+    - Tracks task status (`pending`, `done`, `skipped`, `na`) per employee.
+  - **Use cases**
+    - "Prepare onboarding tasks for a new joiner and track completion."
+    - "Run offboarding checklist and mark IT access revocation as done."
+    - "List pending lifecycle actions by employee and phase."
+
+- **Compliance tracking (`COMPLIANCE`)**
+  - **Feature details**
+    - Stores employment compliance records (contract, work eligibility, other).
+    - Supports lifecycle of records: create, list, get, update, delete.
+    - Enables filtering by employee and record type for monitoring.
+  - **Use cases**
+    - "Create contract validity records and monitor renewal windows."
+    - "Track work-eligibility date ranges for expiring documents."
+    - "Update compliance remarks after legal/admin review."
+
+- **Leave handling (`LEAVE`)**
+  - **Feature details**
+    - Seeds and manages leave type catalog (unit, paid ratio, policy flags).
+    - Handles standard leave applications and compensation leave applications.
+    - Supports application status workflows (`Pending`, `Approved`, etc.).
+  - **Use cases**
+    - "Seed leave types, submit leave request, and list employee leave history."
+    - "Record compensation leave for overtime and track status."
+    - "Review leave requests by employee and approval status."
+
+- **IR56B preparation (`IR56B`)**
+  - **Feature details**
+    - Upserts IR56B profile extension fields linked to employee master records.
+    - Checks profile readiness against required IR56B data fields.
+    - Exports IR56B workbook templates for completion and submission prep.
+  - **Use cases**
+    - "Validate readiness for tax filing and identify missing fields."
+    - "Export IR56B workbook for batch completion."
+    - "Maintain up-to-date HKID/passport and address data for filing."
+
+- **Data quality checks**
+  - **Feature details**
+    - Uses script outputs to detect missing required fields and invalid values.
+    - Highlights inconsistent date ranges and status mismatches.
+    - Provides machine-readable JSON for repeatable validation workflows.
+  - **Use cases**
+    - "Run pre-payroll checks to catch incomplete records."
+    - "Audit IR56B readiness gaps across employees."
+    - "Validate compliance and leave data before monthly reporting."
+
+- **Operational Q&A and assistant guidance**
+  - **Feature details**
+    - Interprets script JSON outputs into human-readable summaries.
+    - Recommends next commands based on previous command outcomes.
+    - Supports troubleshooting flow with explicit command/error context.
+  - **Use cases**
+    - "Explain what this command result means and what to run next."
+    - "Diagnose why a script failed and suggest the smallest safe fix."
+    - "Generate a concise operational status update for HR ops."
 
 ## Database path
 
